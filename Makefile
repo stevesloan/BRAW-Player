@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fno-plt -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fno-plt -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -isystem /usr/include/qt -isystem /usr/include/qt/QtWidgets -isystem /usr/include/qt/QtGui -isystem /usr/include/qt/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt/mkspecs/linux-g++ -I. -isystem /home/ssloan/dev/foss/bmSDK/Linux/Include
+INCPATH       = -I./Include -I. -isystem /usr/include/qt -isystem /usr/include/qt/QtWidgets -isystem /usr/include/qt/QtGui -isystem /usr/include/qt/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt/mkspecs/linux-g++ 
 QMAKE         = /usr/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = bmViewer1.0.0
 DISTDIR = /home/ssloan/dev/bmViewer/.tmp/bmViewer1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
-LIBS          = $(SUBLIBS) /usr/lib/libQt5Widgets.so /usr/lib/libQt5Gui.so /usr/lib/libQt5Core.so /usr/lib/libGL.so -lpthread   
+LIBS          = $(SUBLIBS) /usr/lib/libQt5Widgets.so /usr/lib/libQt5Gui.so /usr/lib/libQt5Core.so /usr/lib/libGL.so -I./Libraries/libBlackmagicRawAPI.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -400,6 +400,10 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 QMAKE_TARGET  = bmViewer
 DESTDIR       = 
 TARGET        = bmViewer
+
+TARGETNAME=$(main)
+LIBRARYNAME=BlackmagicRawAPIDispatch
+SDKDIR=./Include
 
 
 first: all
@@ -1165,7 +1169,7 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
-main.o: main.cpp mainwindow.h
+main.o: main.cpp mainwindow.h $(SDKDIR)/$(LIBRARYNAME).cpp $(SDKDIR)/BlackmagicRawAPI.h $(SDKDIR)/LinuxCOM.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -1174,6 +1178,10 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+$(LIBRARYNAME).o : $(SDKDIR)/$(LIBRARYNAME).cpp $(SDKDIR)/BlackmagicRawAPI.h
+	$(CXX) $(CXXFLAGS) $(INCPATH) -c $(SDKDIR)/$(LIBRARYNAME).cpp
+
 
 ####### Install
 
