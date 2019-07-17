@@ -24,12 +24,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+CXXFLAGS +=-g -std=c++11
+
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+	Include/BlackmagicRawAPIDispatch.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+	Include/BlackmagicRawAPI.h \
+	Include/LinuxCOM.h
+
+INCLUDEPATH += ./Include
 
 FORMS += \
         mainwindow.ui

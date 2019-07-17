@@ -146,81 +146,81 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
 
 int main(int argc, char *argv[])
 {
-//    if (argc > 2)
-//        {
-//            std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
-//            return 1;
-//        }
+    if (argc > 2)
+        {
+            std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
+            return 1;
+        }
 
-//        const char* clipName = nullptr;
-//        bool clipNameProvided = argc == 2;
-//        if (clipNameProvided)
-//        {
-//            clipName = argv[1];
-//        }
-//        else
-//        {
-//            clipName = "../../../Media/sample.braw";
-//        }
+        const char* clipName = nullptr;
+        bool clipNameProvided = argc == 2;
+        if (clipNameProvided)
+        {
+            clipName = argv[1];
+        }
+        else
+        {
+            clipName = "../../../Media/sample.braw";
+        }
 
-//        HRESULT result = S_OK;
+        HRESULT result = S_OK;
 
-//        IBlackmagicRawFactory* factory = nullptr;
-//        IBlackmagicRaw* codec = nullptr;
-//        IBlackmagicRawClip* clip = nullptr;
+        IBlackmagicRawFactory* factory = nullptr;
+        IBlackmagicRaw* codec = nullptr;
+        IBlackmagicRawClip* clip = nullptr;
 
-//        CameraCodecCallback callback;
+        CameraCodecCallback callback;
 
-//        do
-//        {
-//            factory = CreateBlackmagicRawFactoryInstanceFromPath("./Libraries/");
-//            if (factory == nullptr)
-//            {
-//                std::cerr << "Failed to create IBlackmagicRawFactory!" << std::endl;
-//                result = E_FAIL;
-//                break;
-//            }
+        do
+        {
+            factory = CreateBlackmagicRawFactoryInstanceFromPath("./Libraries/");
+            if (factory == nullptr)
+            {
+                std::cerr << "Failed to create IBlackmagicRawFactory!" << std::endl;
+                result = E_FAIL;
+                break;
+            }
 
-//            result = factory->CreateCodec(&codec);
-//            if (result != S_OK)
-//            {
-//                std::cerr << "Failed to create IBlackmagicRaw!" << std::endl;
-//                break;
-//            }
+            result = factory->CreateCodec(&codec);
+            if (result != S_OK)
+            {
+                std::cerr << "Failed to create IBlackmagicRaw!" << std::endl;
+                break;
+            }
 
-//            result = codec->OpenClip(clipName, &clip);
-//            if (result != S_OK)
-//            {
-//                std::cerr << "Failed to open IBlackmagicRawClip!" << std::endl;
-//                break;
-//            }
+            result = codec->OpenClip(clipName, &clip);
+            if (result != S_OK)
+            {
+                std::cerr << "Failed to open IBlackmagicRawClip!" << std::endl;
+                break;
+            }
 
-//            result = codec->SetCallback(&callback);
-//            if (result != S_OK)
-//            {
-//                std::cerr << "Failed to set IBlackmagicRawCallback!" << std::endl;
-//                break;
-//            }
+            result = codec->SetCallback(&callback);
+            if (result != S_OK)
+            {
+                std::cerr << "Failed to set IBlackmagicRawCallback!" << std::endl;
+                break;
+            }
 
-//            result = ProcessClip(clip);
-//            codec->FlushJobs();
+            result = ProcessClip(clip);
+            codec->FlushJobs();
 
-//        } while(0);
+        } while(0);
 
-//        if (clip != nullptr)
-//            clip->Release();
+        if (clip != nullptr)
+            clip->Release();
 
-//        if (codec != nullptr)
-//            codec->Release();
+        if (codec != nullptr)
+            codec->Release();
 
-//        if (factory != nullptr)
-//            factory->Release();
+        if (factory != nullptr)
+            factory->Release();
 
-
+        return result;
     //////////
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+//    QApplication a(argc, argv);
+//    MainWindow w;
+//    w.show();
 
-    return a.exec();
+//    return a.exec();
 }
