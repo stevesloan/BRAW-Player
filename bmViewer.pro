@@ -24,7 +24,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
-CXXFLAGS +=-g -std=c++11
+#CXXFLAGS +=-g -std=c++11
+
+LIBS += -ldl
 
 SOURCES += \
         main.cpp \
