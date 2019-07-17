@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "BlackmagicRawAPI.h"
 #include <QApplication>
+#include <QImage>
+#include <QPixmap>
 
 #include <atomic>
 #include <chrono>
@@ -17,6 +19,8 @@
 static const BlackmagicRawResourceFormat s_resourceFormat = blackmagicRawResourceFormatRGBAU8;
 static const int s_maxJobsInFlight = 3;
 static std::atomic<int> s_jobsInFlight = {0};
+
+MainWindow *w;
 
 struct UserData
 {
@@ -59,12 +63,29 @@ public:
         readJob->Release();
     }
 
-    virtual void ProcessComplete(IBlackmagicRawJob* job, HRESULT result, IBlackmagicRawProcessedImage*)
+    virtual void ProcessComplete(IBlackmagicRawJob* job, HRESULT result, IBlackmagicRawProcessedImage* processedImage)
     {
         UserData* userData = nullptr;
         VERIFY(job->GetUserData((void**)&userData));
 
         std::cout << "Processed frame index: " << userData->frameIndex << std::endl;
+
+        unsigned int width = 0;
+        unsigned int height = 0;
+        void* imageData = nullptr;
+        if (result == S_OK)
+            result = processedImage->GetWidth(&width);
+
+        if (result == S_OK)
+            result = processedImage->GetHeight(&height);
+
+        if (result == S_OK)
+            result = processedImage->GetResource(&imageData);
+        unsigned char* rgba = (unsigned char*)imageData;
+        QImage test = QImage(rgba, width, height, QImage::Format_RGBA8888);
+        QPixmap myPixmap = QPixmap::fromImage(test);
+        w->setText(myPixmap);
+
         delete userData;
 
         job->Release();
@@ -139,88 +160,91 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
         ++s_jobsInFlight;
 
         frameIndex++;
+        qApp->processEvents();
     }
 
     return result;
 }
 
+
 int main(int argc, char *argv[])
 {
     if (argc > 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
+        return 1;
+    }
+
+    QApplication a(argc, argv);
+    w = new MainWindow();
+    w->show();
+
+    const char* clipName = nullptr;
+    bool clipNameProvided = argc == 2;
+    if (clipNameProvided)
+    {
+        clipName = argv[1];
+    }
+    else
+    {
+        clipName = "../../../Media/sample.braw";
+    }
+
+    HRESULT result = S_OK;
+
+    IBlackmagicRawFactory* factory = nullptr;
+    IBlackmagicRaw* codec = nullptr;
+    IBlackmagicRawClip* clip = nullptr;
+
+    CameraCodecCallback callback;
+
+    do
+    {
+        factory = CreateBlackmagicRawFactoryInstanceFromPath("./Libraries/");
+        if (factory == nullptr)
         {
-            std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
-            return 1;
+            std::cerr << "Failed to create IBlackmagicRawFactory!" << std::endl;
+            result = E_FAIL;
+            break;
         }
 
-        const char* clipName = nullptr;
-        bool clipNameProvided = argc == 2;
-        if (clipNameProvided)
+        result = factory->CreateCodec(&codec);
+        if (result != S_OK)
         {
-            clipName = argv[1];
-        }
-        else
-        {
-            clipName = "../../../Media/sample.braw";
+            std::cerr << "Failed to create IBlackmagicRaw!" << std::endl;
+            break;
         }
 
-        HRESULT result = S_OK;
-
-        IBlackmagicRawFactory* factory = nullptr;
-        IBlackmagicRaw* codec = nullptr;
-        IBlackmagicRawClip* clip = nullptr;
-
-        CameraCodecCallback callback;
-
-        do
+        result = codec->OpenClip(clipName, &clip);
+        if (result != S_OK)
         {
-            factory = CreateBlackmagicRawFactoryInstanceFromPath("./Libraries/");
-            if (factory == nullptr)
-            {
-                std::cerr << "Failed to create IBlackmagicRawFactory!" << std::endl;
-                result = E_FAIL;
-                break;
-            }
+            std::cerr << "Failed to open IBlackmagicRawClip!" << std::endl;
+            break;
+        }
 
-            result = factory->CreateCodec(&codec);
-            if (result != S_OK)
-            {
-                std::cerr << "Failed to create IBlackmagicRaw!" << std::endl;
-                break;
-            }
+        result = codec->SetCallback(&callback);
+        if (result != S_OK)
+        {
+            std::cerr << "Failed to set IBlackmagicRawCallback!" << std::endl;
+            break;
+        }
 
-            result = codec->OpenClip(clipName, &clip);
-            if (result != S_OK)
-            {
-                std::cerr << "Failed to open IBlackmagicRawClip!" << std::endl;
-                break;
-            }
+        result = ProcessClip(clip);
+        codec->FlushJobs();
 
-            result = codec->SetCallback(&callback);
-            if (result != S_OK)
-            {
-                std::cerr << "Failed to set IBlackmagicRawCallback!" << std::endl;
-                break;
-            }
+    } while(0);
 
-            result = ProcessClip(clip);
-            codec->FlushJobs();
+    if (clip != nullptr)
+        clip->Release();
 
-        } while(0);
+    if (codec != nullptr)
+        codec->Release();
 
-        if (clip != nullptr)
-            clip->Release();
+    if (factory != nullptr)
+        factory->Release();
 
-        if (codec != nullptr)
-            codec->Release();
+//        return result;
 
-        if (factory != nullptr)
-            factory->Release();
 
-        return result;
-    //////////
-//    QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-
-//    return a.exec();
+    return a.exec();
 }

@@ -15,7 +15,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    static MainWindow * getMainWinPtr();
+    void setText(QPixmap);
+
 private:
+    static MainWindow * pMainWindow;
+
     Ui::MainWindow *ui;
 };
 
