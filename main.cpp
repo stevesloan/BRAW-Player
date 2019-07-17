@@ -82,9 +82,9 @@ public:
         if (result == S_OK)
             result = processedImage->GetResource(&imageData);
         unsigned char* rgba = (unsigned char*)imageData;
-        QImage test = QImage(rgba, width, height, QImage::Format_RGBA8888);
+        QImage test = QImage(rgba, (int)width, (int)height, QImage::Format_RGBA8888);
         QPixmap myPixmap = QPixmap::fromImage(test);
-        w->setText(myPixmap);
+        w->setText(myPixmap, width, height);
 
         delete userData;
 

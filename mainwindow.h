@@ -16,7 +16,10 @@ public:
     ~MainWindow();
 
     static MainWindow * getMainWinPtr();
-    void setText(QPixmap);
+    void setText(QPixmap, unsigned int, unsigned int);
+
+protected:
+    void closeEvent(QCloseEvent *);
 
 private:
     static MainWindow * pMainWindow;

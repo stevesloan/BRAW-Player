@@ -1,5 +1,6 @@
 #include <QString>
 #include <QPixmap>
+#include <QApplication>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //#include "c.h"
@@ -13,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -24,11 +26,12 @@ MainWindow *MainWindow::getMainWinPtr()
     return pMainWindow;
 }
 
-void MainWindow::setText(QPixmap image)
+void MainWindow::closeEvent(QCloseEvent *event) {
+    exit(0);
+}
+
+void MainWindow::setText(QPixmap image, unsigned int width, unsigned int height)
 {
-//    ui->image_label->setText(QString{"test"});
-//    ui->image_label->setMargin(100);
-//    ui->image_label->imag
-      ui->image_label->setPixmap(image);
-//    ui->image_label->setPixmap(QPixmap::fromImage(QImage(image, 100, 100, 10, QImage::Format_RGBA)));
+    ui->image_label->setPixmap(image);
+    ui->image_label->setGeometry(0, 0, width, height);
 }
