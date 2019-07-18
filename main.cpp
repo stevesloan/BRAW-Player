@@ -171,6 +171,8 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
 
         frameIndex++;
         qApp->processEvents();
+        w->updateProgress(((float)frameIndex / (float)frameCount) * 100);
+
         float delay = 1000 / frameRate;
         while(myTimer.elapsed() < delay) {
         }
@@ -191,7 +193,7 @@ void processFile(const char* clipName) {
 
     do
     {
-        factory = CreateBlackmagicRawFactoryInstanceFromPath("./Libraries/");
+        factory = CreateBlackmagicRawFactoryInstance();
         if (factory == nullptr)
         {
             std::cerr << "Failed to create IBlackmagicRawFactory!" << std::endl;
@@ -247,9 +249,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     w = new MainWindow();
     w->show();
-// std::cerr << "" << argv[1] << std::endl;
-// w->setText((QString)argv[1]);
-//    return a.exec();
+
+    std::cerr << argv[1] << std::endl;
 
 
     if(argc == 2) {

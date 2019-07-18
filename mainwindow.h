@@ -18,12 +18,14 @@ public:
     static MainWindow * getMainWinPtr();
     void setText(QPixmap, int, int);
     void setText(QString text);
+    void updateProgress(int);
 
 protected:
-    void closeEvent(QCloseEvent *);
+    void closeEvent(QCloseEvent *) override;
 
 private:
     static MainWindow * pMainWindow;
+    void on_btnLoad_clicked();
 
     Ui::MainWindow *ui;
 };

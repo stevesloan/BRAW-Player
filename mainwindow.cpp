@@ -3,7 +3,8 @@
 #include <QApplication>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include "c.h"
+#include <iostream>
+using namespace std;
 
 MainWindow * MainWindow::pMainWindow = nullptr;
 
@@ -39,4 +40,13 @@ void MainWindow::setText(QPixmap image, int width, int height)
 void MainWindow::setText(QString text)
 {
     ui->image_label->setText(text);
+}
+
+void MainWindow::on_btnLoad_clicked()
+{
+    cout << "" << "Load";
+}
+
+void MainWindow::updateProgress(int value) {
+    ui->progressSlider->setValue(value);
 }
