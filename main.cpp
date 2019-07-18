@@ -180,33 +180,7 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
     return result;
 }
 
-
-int main(int argc, char *argv[])
-{
-    if (argc != 2)
-    {
-        std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
-        return 1;
-    }
-
-    QApplication a(argc, argv);
-    w = new MainWindow();
-    w->show();
-// std::cerr << "" << argv[1] << std::endl;
-// w->setText((QString)argv[1]);
-//    return a.exec();
-
-    const char* clipName = nullptr;
-    bool clipNameProvided = argc == 2;
-    if (clipNameProvided)
-    {
-        clipName = argv[1];
-    }
-    else
-    {
-        clipName = "../../../Media/sample.braw";
-    }
-
+void processFile(const char* clipName) {
     HRESULT result = S_OK;
 
     IBlackmagicRawFactory* factory = nullptr;
@@ -260,6 +234,28 @@ int main(int argc, char *argv[])
 
     if (factory != nullptr)
         factory->Release();
+}
+
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
+    }
+
+    QApplication a(argc, argv);
+    w = new MainWindow();
+    w->show();
+// std::cerr << "" << argv[1] << std::endl;
+// w->setText((QString)argv[1]);
+//    return a.exec();
+
+
+    if(argc == 2) {
+        const char* clipName = argv[1];
+        processFile(clipName);
+    }
 
     return a.exec();
 }
