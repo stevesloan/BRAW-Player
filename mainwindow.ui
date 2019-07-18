@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>817</width>
-    <height>517</height>
+    <width>1022</width>
+    <height>573</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QLabel" name="image_label">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>-10</y>
-      <width>471</width>
-      <height>301</height>
+      <x>20</x>
+      <y>20</y>
+      <width>511</width>
+      <height>321</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -42,7 +42,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>817</width>
+     <width>1022</width>
      <height>27</height>
     </rect>
    </property>

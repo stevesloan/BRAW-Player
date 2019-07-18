@@ -30,8 +30,13 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     exit(0);
 }
 
-void MainWindow::setText(QPixmap image, unsigned int width, unsigned int height)
+void MainWindow::setText(QPixmap image, int width, int height)
 {
     ui->image_label->setPixmap(image);
     ui->image_label->setGeometry(0, 0, width, height);
+}
+
+void MainWindow::setText(QString text)
+{
+    ui->image_label->setText(text);
 }

@@ -43,6 +43,10 @@ public:
         if (result == S_OK)
             VERIFY(frame->SetResourceFormat(s_resourceFormat));
 
+        BlackmagicRawResolutionScale res = 'qrtr';
+        if (result == S_OK)
+            result = frame->SetResolutionScale(res);
+
         if (result == S_OK)
             result = frame->CreateJobDecodeAndProcessFrame(nullptr, nullptr, &decodeAndProcessJob);
 
@@ -81,10 +85,11 @@ public:
 
         if (result == S_OK)
             result = processedImage->GetResource(&imageData);
-        unsigned char* rgba = (unsigned char*)imageData;
-        QImage test = QImage(rgba, (int)width, (int)height, QImage::Format_RGBA8888);
-        QPixmap myPixmap = QPixmap::fromImage(test);
-        w->setText(myPixmap, width, height);
+
+        unsigned char* rgba = static_cast<unsigned char*>(imageData);
+        QImage qimage = QImage(rgba, static_cast<int>(width), static_cast<int>(height), QImage::Format_RGBA8888);
+        QPixmap myPixmap = QPixmap::fromImage(qimage);
+        w->setText(myPixmap, static_cast<int>(width), static_cast<int>(height));
 
         delete userData;
 
@@ -169,7 +174,7 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
 
 int main(int argc, char *argv[])
 {
-    if (argc > 2)
+    if (argc != 2)
     {
         std::cerr << "Usage: " << argv[0] << " clipName.braw" << std::endl;
         return 1;
@@ -178,6 +183,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     w = new MainWindow();
     w->show();
+// std::cerr << "" << argv[1] << std::endl;
+// w->setText((QString)argv[1]);
+//    return a.exec();
 
     const char* clipName = nullptr;
     bool clipNameProvided = argc == 2;
