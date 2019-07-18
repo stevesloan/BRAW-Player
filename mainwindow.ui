@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1022</width>
-    <height>554</height>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>BRAW Player</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="image_label">
