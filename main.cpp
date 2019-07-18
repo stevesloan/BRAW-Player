@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QImage>
 #include <QPixmap>
+#include <QElapsedTimer>
 
 #include <atomic>
 #include <chrono>
@@ -124,12 +125,16 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
     HRESULT result;
 
     long unsigned int frameCount = 0;
+    float frameRate = 0;
     long unsigned int frameIndex = 0;
 
     result = clip->GetFrameCount(&frameCount);
+    result = clip->GetFrameRate(&frameRate);
 
     while (frameIndex < frameCount)
     {
+        QElapsedTimer myTimer;
+        myTimer.start();
         if (s_jobsInFlight >= s_maxJobsInFlight)
         {
             std::this_thread::sleep_for(std::chrono::microseconds(100));
@@ -166,6 +171,10 @@ HRESULT ProcessClip(IBlackmagicRawClip* clip)
 
         frameIndex++;
         qApp->processEvents();
+        float delay = 1000 / frameRate;
+        while(myTimer.elapsed() < delay) {
+        }
+
     }
 
     return result;
@@ -238,6 +247,7 @@ int main(int argc, char *argv[])
         }
 
         result = ProcessClip(clip);
+
         codec->FlushJobs();
 
     } while(0);
@@ -250,9 +260,6 @@ int main(int argc, char *argv[])
 
     if (factory != nullptr)
         factory->Release();
-
-//        return result;
-
 
     return a.exec();
 }
