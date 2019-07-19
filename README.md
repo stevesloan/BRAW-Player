@@ -4,6 +4,6 @@ Preview BRAW footage on Linux
 
 ## Instructions
 
-- [Download](https://www.blackmagicdesign.com/products/blackmagicraw) linux SDK 1.3 and place it in project directory.
+- [Download CameraCodecSDK_Linux_1.3.tar.gz](https://www.blackmagicdesign.com/products/blackmagicraw) and place it in project directory.
 - ```./extractSDK.sh```
 - ```make```
