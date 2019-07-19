@@ -59,7 +59,11 @@ OBJECTS       = main.o \
 		mainwindow.o \
 		BlackmagicRawAPIDispatch.o \
 		moc_mainwindow.o
-DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
+DIST          = BlackmagicRawAPI/libBlackmagicRawAPI.so \
+		BlackmagicRawAPI/libDecoderCUDA.so \
+		BlackmagicRawAPI/libDecoderOpenCL.so \
+		bmViewer \
+		/usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
 		/usr/lib/qt/mkspecs/common/sanitize.conf \
@@ -1201,9 +1205,22 @@ uninstall_target: FORCE
 	-$(DEL_DIR) $(INSTALL_ROOT)/opt/bmViewer/bin/ 
 
 
-install: install_target  FORCE
+install_BlackmagicRawAPI: first FORCE
+	@test -d $(INSTALL_ROOT)/opt/bmViewer/bin || mkdir -p $(INSTALL_ROOT)/opt/bmViewer/bin
+	-$(QINSTALL) /home/ssloan/dev/personal/BRAW-Player/BlackmagicRawAPI/libBlackmagicRawAPI.so $(INSTALL_ROOT)/opt/bmViewer/bin/libBlackmagicRawAPI.so
+	-$(QINSTALL) /home/ssloan/dev/personal/BRAW-Player/BlackmagicRawAPI/libDecoderCUDA.so $(INSTALL_ROOT)/opt/bmViewer/bin/libDecoderCUDA.so
+	-$(QINSTALL) /home/ssloan/dev/personal/BRAW-Player/BlackmagicRawAPI/libDecoderOpenCL.so $(INSTALL_ROOT)/opt/bmViewer/bin/libDecoderOpenCL.so
 
-uninstall: uninstall_target  FORCE
+uninstall_BlackmagicRawAPI: FORCE
+	-$(DEL_FILE) -r $(INSTALL_ROOT)/opt/bmViewer/bin/libDecoderOpenCL.so
+	-$(DEL_FILE) -r $(INSTALL_ROOT)/opt/bmViewer/bin/libDecoderCUDA.so
+	-$(DEL_FILE) -r $(INSTALL_ROOT)/opt/bmViewer/bin/libBlackmagicRawAPI.so
+	-$(DEL_DIR) $(INSTALL_ROOT)/opt/bmViewer/bin/ 
+
+
+install: install_target install_BlackmagicRawAPI  FORCE
+
+uninstall: uninstall_target uninstall_BlackmagicRawAPI  FORCE
 
 FORCE:
 

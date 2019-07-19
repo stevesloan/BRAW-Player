@@ -1,4 +1,4 @@
-#-------------------------------------------------
+    #-------------------------------------------------
 #
 # Project created by QtCreator 2019-07-16T11:13:19
 #
@@ -47,3 +47,13 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    BlackmagicRawAPI/libBlackmagicRawAPI.so \
+    BlackmagicRawAPI/libDecoderCUDA.so \
+    BlackmagicRawAPI/libDecoderOpenCL.so \
+    bmViewer
+
+BlackmagicRawAPI.path = /opt/$${TARGET}/bin
+BlackmagicRawAPI.files = BlackmagicRawAPI/*
+INSTALLS += BlackmagicRawAPI
