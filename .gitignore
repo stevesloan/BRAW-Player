@@ -1,5 +1,4 @@
 bmViewer
-Makefile
 *.autosave
 CameraCodecSDK_Linux_1.3.tar.gz
 BlackmagicRawAPIDispatch.o
